@@ -1,6 +1,6 @@
 <?php
 
-namespace Helpers {
+namespace Php\LeadsCrmApp\Helpers {
      
     function render(string $view, array $context){
 
@@ -17,3 +17,4 @@ namespace Helpers {
         return $base_path . 'templates\\' . $fragment . '.inc.php';
     }
 }
+

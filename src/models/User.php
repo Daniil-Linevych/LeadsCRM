@@ -1,6 +1,6 @@
 <?php
 
-namespace Models;
+namespace Php\LeadsCrmApp\Models;
 
 class User{
 
