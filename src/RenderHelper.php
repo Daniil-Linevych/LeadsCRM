@@ -23,10 +23,4 @@ class RenderHelper
         extract($context);
         require Settings::BASE_PATH . 'templates\\' . $layout . '.php';
     }
-
-    function get_fragment_path(string $fragment): string
-    {
-
-        return Settings::BASE_PATH . 'templates\\' . $fragment . '.inc.php';
-    }
 }

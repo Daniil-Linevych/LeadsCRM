@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <title><?= isset($site_title) ? "$site_title | " : '' ?><?= \Settings\SITE_NAME ?></title>
-</head>
-<body>
-    
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">LeadsCRM</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#crmNavbar" aria-controls="crmNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="crmNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="leads.php">Leads</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <?php if (\Php\LeadsCrmApp\Models\User::isAuthorised()) { ?>
+                        <span class="me-3 text-white">Hello, <?= Php\LeadsCrmApp\Models\User::authorisedUserName() ?></span>
+                        <a href="/logout" class="btn btn-light btn-sm">Log out</a>
+                    <?php } else { ?>
+                        <a href="/login" class="btn btn-light btn-sm me-2">Log in</a>
+                        <a href="/register" class="btn btn-light btn-sm">Sign up</a>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

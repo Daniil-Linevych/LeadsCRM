@@ -14,9 +14,15 @@ class BaseController
         $this->renderHelper = new RenderHelper();
     }
 
-    protected function render(string $template, array $context)
+    protected function render(string $template, array $context = [])
     {
 
         $this->renderHelper->renderWithLayout($template, $context);
+    }
+
+    protected function redirect($path)
+    {
+        header("Location: {$path}");
+        die();
     }
 }

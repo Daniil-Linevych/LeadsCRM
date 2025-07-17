@@ -1,10 +1,9 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
+session_start();
 
-use Php\LeadsCrmApp\Settings;
 use Php\LeadsCrmApp\Router;
 
-$settings = new Settings();
 $router = new Router();
 
 $router->handleRequest();
