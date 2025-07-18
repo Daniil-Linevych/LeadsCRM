@@ -6,6 +6,7 @@ use Php\LeadsCrmApp\Controllers\UserController;
 use Php\LeadsCrmApp\Controllers\MainController;
 use Php\LeadsCrmApp\Controllers\LeadController;
 use Php\LeadsCrmApp\Exceptions\NotFoundException;
+use Php\LeadsCrmApp\Models\User;
 
 class Router
 {
@@ -73,11 +74,13 @@ class Router
                 $this->userController->logout();
                 break;
 
-            default:
-                if (preg_match("/^(\d+)$/", $path) === 1) {
-                    $this->leadController->show((int)$path);
-                    return;
+            case 'leads':
+                if (!User::isAuthorised()) {
+                    header("Location: /login ");
                 }
+                $this->handleLeadsRoute($segments, $method);
+                break;
+            default:
                 throw new NotFoundException();
         }
     }
@@ -85,7 +88,7 @@ class Router
     protected function handleNotFound(NotFoundException $e)
     {
         http_response_code($e->getCode());
-        echo "404 Not Found";
+        echo "404 Not Found {$e->getMessage()}";
     }
 
     protected function handleServerError(\Exception $e)
@@ -93,5 +96,51 @@ class Router
         http_response_code(500);
         echo "500 Server Error";
         error_log($e->getMessage());
+    }
+
+    protected function handleLeadsRoute($segments, $method)
+    {
+        $id = $segments[1] ?? null;
+        $action = $segments[2] ?? null;
+
+        if ($id === null && $method === 'GET') {
+            $this->leadController->index();
+        } else if (is_numeric($id)) {
+            $this->handleLeadAction($action, $id, $method);
+        } else if ($id === 'create' && $method === 'GET') {
+            $this->leadController->create();
+        } else if ($id === null && $method === 'POST') {
+            $this->leadController->store();
+        } else if ($id !== null && $action !== null && $method === 'POST') {
+            $this->handleLeadAction($action, $id, $method);
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    protected function handleLeadAction($action, $id, $method)
+    {
+        switch ($method) {
+            case 'GET':
+                if ($action == null) {
+                    $this->leadController->show((int)$id);
+                } else if ($action == 'edit') {
+                    $this->leadController->edit((int)$id);
+                } else {
+                    throw new NotFoundException();
+                }
+                break;
+            case 'POST':
+                if ($action == 'edit') {
+                    $this->leadController->store((int)$id);
+                } else if ($action == 'delete') {
+                    $this->leadController->delete((int)$id);
+                } else {
+                    throw new NotFoundException();
+                }
+                break;
+            default:
+                throw new NotFoundException();
+        }
     }
 }

@@ -10,4 +10,14 @@ class Utils
     {
         return Settings::BASE_PATH . 'templates\\' . $fragment . '.inc.php';
     }
+
+    public static function filterByNameOrEmail($allLeads, $search)
+    {
+        return array_filter($allLeads, function ($lead) use ($search) {
+            if ($search === '') return true;
+
+            return stripos($lead['name'], $search) !== false ||
+                stripos($lead['email'], $search) !== false;
+        });
+    }
 }

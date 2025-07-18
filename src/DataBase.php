@@ -87,4 +87,13 @@ class DataBase
 
         return $sql;
     }
+
+    public static function count($table, $column = '*', $distinct_columns = false, $conditions = [])
+    {
+        $distinct = $distinct_columns ? 'DISTINCT' : '';
+        $where = implode(' AND ', array_map(fn ($col) => "{$col} = ?", array_keys($conditions)));
+        $sql = "SELECT COUNT($distinct $column) FROM {$table} WHERE {$where}";
+
+        return $sql;
+    }
 }

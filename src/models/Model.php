@@ -7,7 +7,7 @@ use PDO;
 use PDOStatement;
 use Iterator;
 
-class Model implements Iterator
+class Model
 {
     protected const TABLE_NAME = '';
     protected const RELATIONS = [];
@@ -97,6 +97,29 @@ class Model implements Iterator
         }
     }
 
+    public function update(array $data, array $conditions = null)
+    {
+        $sql = DataBase::update(static::TABLE_NAME, $data, $conditions);
+        $params = array_merge($data, $conditions);
+        try {
+            $this->run($sql, array_values($params));
+        } catch (\PDOException $e) {
+            error_log("Update failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function delete(array $conditions)
+    {
+        $sql = DataBase::delete(static::TABLE_NAME, $conditions);
+        try {
+            $this->run($sql, array_values($conditions));
+        } catch (\PDOException $e) {
+            error_log("Delete failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function find(array $param): ?array
     {
         $this->select('*', "{$param['key']} = :{$param['key']}", ["{$param['key']}" => $param['value']]);
@@ -109,39 +132,21 @@ class Model implements Iterator
         return $this->query?->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function get_query($sql, $params)
+    public function countAll()
     {
-        $this->run($sql, $params);
+        $sql = DataBase::count(static::TABLE_NAME);
+        try {
+            $this->run($sql);
+        } catch (\PDOException $e) {
+            error_log("Select count failed: " . $e->getMessage());
+            return false;
+        }
         return $this->query?->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function get_record($fields = "*", $where = '',  $params = null, $links = null)
+    public function getRecordByQuery($sql, $params)
     {
-    }
-
-
-    function current(): mixed
-    {
-        return $this->record;
-    }
-
-    function next(): void
-    {
-        $this->record = $this->query?->fetch(PDO::FETCH_ASSOC) ?? false;
-    }
-
-    function key(): mixed
-    {
-        return 0;
-    }
-
-    function rewind(): void
-    {
-        $this->record = $this->query->fetch(PDO::FETCH_ASSOC) ?? false;
-    }
-
-    function valid(): bool
-    {
-        return $this->record !== FALSE;
+        $this->run($sql, $params);
+        return $this->query?->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 }

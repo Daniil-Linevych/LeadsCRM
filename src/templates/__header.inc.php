@@ -9,15 +9,15 @@
             <div class="collapse navbar-collapse" id="crmNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php">Home</a>
+                        <a class="nav-link active" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="leads.php">Leads</a>
+                        <a class="nav-link" href="/leads">Leads</a>
                     </li>
                 </ul>
                 <div class="d-flex">
                     <?php if (\Php\LeadsCrmApp\Models\User::isAuthorised()) { ?>
-                        <span class="me-3 text-white">Hello, <?= Php\LeadsCrmApp\Models\User::authorisedUserName() ?></span>
+                        <span class="me-3 text-white"><?= Php\LeadsCrmApp\Models\User::authorisedUserName() ?></span>
                         <a href="/logout" class="btn btn-light btn-sm">Log out</a>
                     <?php } else { ?>
                         <a href="/login" class="btn btn-light btn-sm me-2">Log in</a>
