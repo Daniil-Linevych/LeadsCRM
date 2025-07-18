@@ -11,4 +11,9 @@ class MainController extends BaseController
     {
         $this->render('main', []);
     }
+
+    function error($code, $text)
+    {
+        $this->render('error', ['code' => $code, 'text' => $text]);
+    }
 }

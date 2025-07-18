@@ -5,7 +5,7 @@ namespace Php\LeadsCrmApp\Models;
 use Php\LeadsCrmApp\DataBase;
 use PDO;
 use PDOStatement;
-use Iterator;
+
 
 class Model
 {
@@ -16,7 +16,6 @@ class Model
     private static $connection_count = 0;
 
     private ?PDOStatement $query = null;
-    private array|false $record = false;
 
     function __construct()
     {
@@ -148,5 +147,12 @@ class Model
     {
         $this->run($sql, $params);
         return $this->query?->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    protected static function ensureConnection()
+    {
+        if (!self::$connection) {
+            self::$connection = DataBase::connect();
+        }
     }
 }

@@ -8,12 +8,12 @@ use PDOException;
 
 class DataBase
 {
+
     public static function connect()
     {
-
         try {
-            $dsn = "mysql: host=" . Settings::DB_HOST . ";dbname=" . Settings::DB_NAME . ";charset=utf8mb4";
-            $db = new PDO($dsn, Settings::DB_USERNAME, Settings::DB_PASSWORD);
+            $dsn = "mysql: host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME']  . ";charset=utf8mb4";
+            $db = new PDO($dsn, $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $db;
         } catch (PDOException $e) {

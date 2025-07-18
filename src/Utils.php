@@ -3,6 +3,7 @@
 namespace Php\LeadsCrmApp;
 
 use Php\LeadsCrmApp\Settings;
+use Php\LeadsCrmApp\Models\User;
 
 class Utils
 {
@@ -19,5 +20,13 @@ class Utils
             return stripos($lead['name'], $search) !== false ||
                 stripos($lead['email'], $search) !== false;
         });
+    }
+
+    public static function provideUserAuthorised()
+    {
+        if (!User::isAuthorised()) {
+            header("Location: /login ");
+            die;
+        }
     }
 }

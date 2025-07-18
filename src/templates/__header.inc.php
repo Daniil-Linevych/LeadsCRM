@@ -15,13 +15,24 @@
                         <a class="nav-link" href="/leads">Leads</a>
                     </li>
                 </ul>
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
                     <?php if (\Php\LeadsCrmApp\Models\User::isAuthorised()) { ?>
-                        <span class="me-3 text-white"><?= Php\LeadsCrmApp\Models\User::authorisedUserName() ?></span>
-                        <a href="/logout" class="btn btn-light btn-sm">Log out</a>
+                        <div class="d-flex align-items-center me-3">
+                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                <i class="bi bi-person-fill bg-dark text-white"></i>
+                            </div>
+                            <span class="text-white"><?= Php\LeadsCrmApp\Models\User::authorisedUserName() ?></span>
+                        </div>
+                        <a href="/logout" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-box-arrow-right me-1"></i> Log out
+                        </a>
                     <?php } else { ?>
-                        <a href="/login" class="btn btn-light btn-sm me-2">Log in</a>
-                        <a href="/register" class="btn btn-light btn-sm">Sign up</a>
+                        <a href="/login" class="btn btn-outline-light btn-sm me-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Log in
+                        </a>
+                        <a href="/register" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-person-plus me-1"></i> Sign up
+                        </a>
                     <?php } ?>
                 </div>
             </div>

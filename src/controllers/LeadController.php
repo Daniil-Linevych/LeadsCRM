@@ -16,7 +16,7 @@ class LeadController extends BaseController
     function index()
     {
         $lead = new Lead();
-        $allLeads = $lead->all();
+        $allLeads = $lead->getAllLeads();
 
         $search = $_GET['search'] ?? '';
 

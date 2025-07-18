@@ -5,20 +5,22 @@ namespace Php\LeadsCrmApp;
 use Php\LeadsCrmApp\Controllers\UserController;
 use Php\LeadsCrmApp\Controllers\MainController;
 use Php\LeadsCrmApp\Controllers\LeadController;
+use Php\LeadsCrmApp\Controllers\Api\LeadsApiController;
 use Php\LeadsCrmApp\Exceptions\NotFoundException;
-use Php\LeadsCrmApp\Models\User;
 
 class Router
 {
     protected UserController $userController;
     protected MainController $mainController;
     protected LeadController $leadController;
+    protected LeadsApiController $leadsApiController;
 
     public function __construct()
     {
         $this->mainController = new MainController();
         $this->userController = new UserController();
         $this->leadController = new LeadController();
+        $this->leadsApiController = new LeadsApiController();
     }
 
     public function handleRequest()
@@ -75,11 +77,13 @@ class Router
                 break;
 
             case 'leads':
-                if (!User::isAuthorised()) {
-                    header("Location: /login ");
-                }
+                Utils::provideUserAuthorised();
                 $this->handleLeadsRoute($segments, $method);
                 break;
+
+            case 'api':
+                $this->handleApiEndpoints($segments, $method);
+
             default:
                 throw new NotFoundException();
         }
@@ -88,13 +92,14 @@ class Router
     protected function handleNotFound(NotFoundException $e)
     {
         http_response_code($e->getCode());
-        echo "404 Not Found {$e->getMessage()}";
+        $this->mainController->error(404, 'Resource not found');
+        error_log($e->getMessage());
     }
 
     protected function handleServerError(\Exception $e)
     {
         http_response_code(500);
-        echo "500 Server Error";
+        $this->mainController->error(500, 'Server error');
         error_log($e->getMessage());
     }
 
@@ -137,6 +142,22 @@ class Router
                     $this->leadController->delete((int)$id);
                 } else {
                     throw new NotFoundException();
+                }
+                break;
+            default:
+                throw new NotFoundException();
+        }
+    }
+
+    protected function handleApiEndpoints($segments, $method)
+    {
+        $direction = $segments[1] ?? '';
+        $action = $segments[2] ?? '';
+
+        switch ($direction) {
+            case 'leads':
+                if ($action == 'add' && $method == 'POST') {
+                    $this->leadsApiController->addLeads();
                 }
                 break;
             default:
